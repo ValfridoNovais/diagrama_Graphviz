@@ -1,45 +1,23 @@
-digraph "Esquema Conceitual Dinâmico" {
+digraph "Diagrama ER" {
 	bgcolor="white:lightblue" gradientangle=270 style=filled
-	Clientes [label="Clientes
-(Codigo
-Nome
-Telefone
-Endereço)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
-	Veiculo [label="Veiculo
-(Código
-Placa
-Modelo
-Marca
-Ano
-Código Cliente)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
-	"Ordem Serviço (OS)" [label="Ordem Serviço (OS)
-(Número
-Data de Emissão
-Data de Conclusão
-Valor Total
-Status
-Código Veículo
-Código Equipe)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
-	Equipe [label="Equipe
-(Código
-Nome da Equipe)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
-	"Serviço" [label="Serviço
-(Código
-Descrição
-Valor por Referência de Mão de Obra)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
-	"Peça" [label="Peça
-(Código
-Descrição
-Valor Unitário)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
-	"Mecânico" [label="Mecânico
-(Código
-Nome
-Endereço
-Especialidade)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
-	"Tabela Referencia Mão De Obra" [label="Tabela Referencia Mão De Obra
-(Código
-Descrição
-Valor Hora)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
+	fontsize=26 label="Diagrama Entidade-Relacionamento
+Oficina" labelloc=t
+	Clientes [label=< <b>Clientes</b><br/>
+Codigo, Nome, Telefone, Endereço > fillcolor="#f9f9f9" fontsize=12 shape=box style="filled,rounded"]
+	Veiculo [label=< <b>Veiculo</b><br/>
+Código, Placa, Modelo, Marca, Ano, Código Cliente > fillcolor="#f9f9f9" fontsize=12 shape=box style="filled,rounded"]
+	"Ordem Serviço (OS)" [label=< <b>Ordem Serviço (OS)</b><br/>
+Número, Data de Emissão, Data de Conclusão, Valor Total, Status, Código Veículo, Código Equipe > fillcolor="#f9f9f9" fontsize=12 shape=box style="filled,rounded"]
+	Equipe [label=< <b>Equipe</b><br/>
+Código, Nome da Equipe > fillcolor="#f9f9f9" fontsize=12 shape=box style="filled,rounded"]
+	"Serviço" [label=< <b>Serviço</b><br/>
+Código, Descrição, Valor por Referência de Mão de Obra > fillcolor="#f9f9f9" fontsize=12 shape=box style="filled,rounded"]
+	"Peça" [label=< <b>Peça</b><br/>
+Código, Descrição, Valor Unitário > fillcolor="#f9f9f9" fontsize=12 shape=box style="filled,rounded"]
+	"Mecânico" [label=< <b>Mecânico</b><br/>
+Código, Nome, Endereço, Especialidade > fillcolor="#f9f9f9" fontsize=12 shape=box style="filled,rounded"]
+	"Tabela Referencia Mão De Obra" [label=< <b>Tabela Referencia Mão De Obra</b><br/>
+Código, Descrição, Valor Hora > fillcolor="#f9f9f9" fontsize=12 shape=box style="filled,rounded"]
 	Clientes -> Veiculo [label="Código 1:N Código Cliente" fontsize=10]
 	Veiculo -> "Ordem Serviço (OS)" [label="Código 1:N Código Veiculo " fontsize=10]
 	"Ordem Serviço (OS)" -> Equipe [label="Numero N:1 Código" fontsize=10]

@@ -27,15 +27,30 @@ def list_databases():
     return [f.replace(".json", "") for f in os.listdir(DB_DIR) if f.endswith(".json")]
 
 # Função para criar o diagrama
-def create_dynamic_diagram(tables, relationships):
-    diagram = Digraph('Esquema Conceitual Dinâmico', format='png')
+def create_dynamic_diagram(tables, relationships, db_name):
+    diagram = Digraph('Diagrama ER', format='png')
     diagram.attr(bgcolor="white:lightblue", style="filled", gradientangle="270")
     
+    # Adicionar título ao diagrama
+    diagram.attr(
+        label=f"Diagrama Entidade-Relacionamento\n{db_name}",
+        labelloc="t",
+        fontsize="26"
+    )
+
     # Adicionar tabelas ao diagrama
     for table, columns in tables.items():
-        column_text = "\n".join(columns)
-        diagram.node(table, f"{table}\n({column_text})", shape="box", style="filled,rounded", fillcolor="#f9f9f9")
-    
+        # Nome da tabela em negrito e colunas na mesma linha
+        column_text = ", ".join(columns)
+        diagram.node(
+            table,
+            f"< <b>{table}</b><br/>\n{column_text} >",
+            shape="box",
+            style="filled,rounded",
+            fillcolor="#f9f9f9",
+            fontsize="12"
+        )
+
     # Adicionar relacionamentos
     for relationship in relationships:
         diagram.edge(relationship["from"], relationship["to"], label=relationship.get("label", ""), fontsize="10")
@@ -135,7 +150,7 @@ elif action == "Visualizar Diagramas":
         selected_db = st.selectbox("Selecione um Banco de Dados", db_list)
         if st.button("Gerar Diagrama"):
             tables, relationships = load_database(selected_db)
-            diagram = create_dynamic_diagram(tables, relationships)
+            diagram = create_dynamic_diagram(tables, relationships, selected_db)
             diagram_path = f"./{selected_db}_diagram"
             diagram.render(diagram_path, format="png")
             st.image(f"{diagram_path}.png", caption=f"Diagrama do Banco de Dados: {selected_db}", use_container_width=True)
