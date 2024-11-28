@@ -1,3 +1,4 @@
+
 # Gerador Dinâmico de Banco de Dados com Diagramas e SQL
 
 ## Descrição
@@ -42,8 +43,9 @@ Antes de executar o programa, certifique-se de ter as seguintes dependências in
 
 ### Instalação das Dependências
 
-bash
+```bash
 pip install streamlit graphviz
+```
 
 ### Instalação do Graphviz
 
@@ -53,45 +55,52 @@ pip install streamlit graphviz
 - **Linux**:  
   ```bash
   sudo apt install graphviz
+  ```
 
 - **macOS**:  
   ```bash
   brew install graphviz
+  ```
+
+---
 
 # Como Usar
 
 ## Clone o repositório:
-
-- **Clone**:
-  ```bash
- git clone <URL do repositório>
- cd <nome do diretório clonado>
-  
+```bash
+git clone <URL do repositório>
+cd <nome do diretório clonado>
+```
 
 ## Execute o programa:
-- **Execução**:
- ```bash
- streamlit run app.py
+```bash
+streamlit run app.py
+```
 
 ## Acesse no navegador:
 Normalmente, o Streamlit será iniciado em [http://localhost:8501](http://localhost:8501).
 
 ## Utilize a interface:
-- **Criar Novo Banco de Dados:** Insira o nome do banco e adicione tabelas com colunas e relacionamentos.
-- **Editar Banco de Dados:** Carregue um banco existente para modificações.
-- **Visualizar Diagramas e SQL:** Gera e exibe o diagrama ER e o script SQL correspondente.
+- **Criar Novo Banco de Dados**: Insira o nome do banco e adicione tabelas com colunas e relacionamentos.
+- **Editar Banco de Dados**: Carregue um banco existente para modificações.
+- **Visualizar Diagramas e SQL**: Gera e exibe o diagrama ER e o script SQL correspondente.
 
 ## Exporte os resultados:
-- **Baixar Diagrama:** Clique no botão para salvar o diagrama como PNG.
-- **Baixar Script SQL:** Salve o comando SQL gerado como um arquivo `.sql`.
+- **Baixar Diagrama**: Clique no botão para salvar o diagrama como PNG.
+- **Baixar Script SQL**: Salve o comando SQL gerado como um arquivo `.sql`.
+
+---
 
 ## Estrutura do Código
-- **app.py:** Contém toda a lógica do programa, incluindo a interface Streamlit, geração de diagramas, e criação de SQL.
-- **bancos_dados/:** Diretório onde os bancos de dados são salvos em arquivos JSON.
+
+- **app.py**: Contém toda a lógica do programa, incluindo a interface Streamlit, geração de diagramas, e criação de SQL.
+- **bancos_dados/**: Diretório onde os bancos de dados são salvos em arquivos JSON.
+
+---
 
 ## Funções Principais
-- **save_database:** Salva as tabelas e relacionamentos no formato JSON.
-- **load_database:** Carrega um banco de dados existente.
-- **generate_sql:** Gera o script SQL para criar as tabelas e relacionamentos.
-- **create_dynamic_diagram:** Gera o diagrama ER com Graphviz.
 
+- **save_database**: Salva as tabelas e relacionamentos no formato JSON.
+- **load_database**: Carrega um banco de dados existente.
+- **generate_sql**: Gera o script SQL para criar as tabelas e relacionamentos.
+- **create_dynamic_diagram**: Gera o diagrama ER com Graphviz.
