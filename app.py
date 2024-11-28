@@ -40,11 +40,12 @@ def create_dynamic_diagram(tables, relationships, db_name):
 
     # Adicionar tabelas ao diagrama
     for table, columns in tables.items():
-        # Nome da tabela em negrito e colunas na mesma linha
-        column_text = ", ".join(columns)
+        # Nome da tabela em negrito e colunas na mesma linha, mas separadas
+        column_text = ", ".join(columns)  # Colunas na mesma linha
+        formatted_text = f"<<b>{table}</b><br/><font point-size='12'>{column_text}</font>>"
         diagram.node(
             table,
-            f"< <b>{table}</b><br/>\n{column_text} >",
+            formatted_text,  # Conteúdo do nó com separação de linhas
             shape="box",
             style="filled,rounded",
             fillcolor="#f9f9f9",
@@ -56,6 +57,30 @@ def create_dynamic_diagram(tables, relationships, db_name):
         diagram.edge(relationship["from"], relationship["to"], label=relationship.get("label", ""), fontsize="10")
     
     return diagram
+
+# Função para gerar o SQL
+def generate_sql(tables, relationships):
+    sql_commands = []
+
+    # Criar tabelas
+    for table, columns in tables.items():
+        column_definitions = []
+        for column in columns:
+            column_definitions.append(f"{column} TEXT")  # Tipo de dado padrão: TEXT
+
+        # Verificar relacionamentos
+        table_relationships = [
+            r for r in relationships if r["from"] == table
+        ]
+        for rel in table_relationships:
+            column_definitions.append(
+                f"FOREIGN KEY ({rel['from']}) REFERENCES {rel['to']}({rel['from']})"
+            )
+
+        sql = f"CREATE TABLE {table} (\n  " + ",\n  ".join(column_definitions) + "\n);"
+        sql_commands.append(sql)
+
+    return "\n\n".join(sql_commands)
 
 # Inicializar variáveis de sessão para tabelas e relacionamentos
 if "current_db" not in st.session_state:
@@ -142,17 +167,25 @@ elif action == "Editar Banco de Dados":
             )
             st.success(f"Alterações salvas no banco de dados '{st.session_state['current_db']}'.")
 
-# Visualizar diagramas
+# Visualizar diagramas e SQL
 elif action == "Visualizar Diagramas":
-    st.title("Visualizar Diagramas")
+    st.title("Visualizar Diagramas e SQL")
     db_list = list_databases()
     if db_list:
         selected_db = st.selectbox("Selecione um Banco de Dados", db_list)
-        if st.button("Gerar Diagrama"):
+        if st.button("Gerar Diagrama e SQL"):
             tables, relationships = load_database(selected_db)
+            # Gerar o diagrama
             diagram = create_dynamic_diagram(tables, relationships, selected_db)
             diagram_path = f"./{selected_db}_diagram"
             diagram.render(diagram_path, format="png")
             st.image(f"{diagram_path}.png", caption=f"Diagrama do Banco de Dados: {selected_db}", use_container_width=True)
-            with open(f"{diagram_path}.png", "rb") as img:
-                st.download_button("Baixar Imagem", data=img, file_name=f"{selected_db}_diagram.png", mime="image/png")
+
+            # Gerar SQL
+            sql_script = generate_sql(tables, relationships)
+            st.subheader("Comando SQL Gerado")
+            st.code(sql_script, language="sql")
+            with open(f"{selected_db}_script.sql", "w") as f:
+                f.write(sql_script)
+            with open(f"{selected_db}_script.sql", "rb") as sql_file:
+                st.download_button("Baixar Script SQL", data=sql_file, file_name=f"{selected_db}_script.sql", mime="text/sql")
