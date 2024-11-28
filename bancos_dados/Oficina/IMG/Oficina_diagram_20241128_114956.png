@@ -2,7 +2,7 @@ digraph "Diagrama ER" {
 	bgcolor=white gradientangle=270 style=filled
 	fontsize=20 label="Diagrama ER - Oficina" labelloc=t
 	subgraph cluster_Clientes {
-		color=lightblue label=Clientes style="filled,rounded"
+		color=lightblue fontsize=14 label=<<b>Clientes</b>> style="filled,rounded"
 		Clientes_Codigo [label=Codigo fontsize=10 shape=ellipse]
 		Clientes -> Clientes_Codigo
 		Clientes_Nome [label=Nome fontsize=10 shape=ellipse]
@@ -13,7 +13,7 @@ digraph "Diagrama ER" {
 		Clientes -> "Clientes_Endereço"
 	}
 	subgraph cluster_Veiculo {
-		color=lightblue label=Veiculo style="filled,rounded"
+		color=lightblue fontsize=14 label=<<b>Veiculo</b>> style="filled,rounded"
 		"Veiculo_Código" [label="Código" fontsize=10 shape=ellipse]
 		Veiculo -> "Veiculo_Código"
 		Veiculo_Placa [label=Placa fontsize=10 shape=ellipse]
@@ -28,7 +28,7 @@ digraph "Diagrama ER" {
 		Veiculo -> "Veiculo_Código Cliente"
 	}
 	subgraph "cluster_Ordem Serviço (OS)" {
-		color=lightblue label="Ordem Serviço (OS)" style="filled,rounded"
+		color=lightblue fontsize=14 label=<<b>Ordem Serviço (OS)</b>> style="filled,rounded"
 		"Ordem Serviço (OS)_Número" [label="Número" fontsize=10 shape=ellipse]
 		"Ordem Serviço (OS)" -> "Ordem Serviço (OS)_Número"
 		"Ordem Serviço (OS)_Data de Emissão" [label="Data de Emissão" fontsize=10 shape=ellipse]
@@ -45,14 +45,14 @@ digraph "Diagrama ER" {
 		"Ordem Serviço (OS)" -> "Ordem Serviço (OS)_Código Equipe"
 	}
 	subgraph cluster_Equipe {
-		color=lightblue label=Equipe style="filled,rounded"
+		color=lightblue fontsize=14 label=<<b>Equipe</b>> style="filled,rounded"
 		"Equipe_Código" [label="Código" fontsize=10 shape=ellipse]
 		Equipe -> "Equipe_Código"
 		"Equipe_Nome da Equipe" [label="Nome da Equipe" fontsize=10 shape=ellipse]
 		Equipe -> "Equipe_Nome da Equipe"
 	}
 	subgraph "cluster_Serviço" {
-		color=lightblue label="Serviço" style="filled,rounded"
+		color=lightblue fontsize=14 label=<<b>Serviço</b>> style="filled,rounded"
 		"Serviço_Código" [label="Código" fontsize=10 shape=ellipse]
 		"Serviço" -> "Serviço_Código"
 		"Serviço_Descrição" [label="Descrição" fontsize=10 shape=ellipse]
@@ -61,7 +61,7 @@ digraph "Diagrama ER" {
 		"Serviço" -> "Serviço_Valor por Referência de Mão de Obra"
 	}
 	subgraph "cluster_Peça" {
-		color=lightblue label="Peça" style="filled,rounded"
+		color=lightblue fontsize=14 label=<<b>Peça</b>> style="filled,rounded"
 		"Peça_Código" [label="Código" fontsize=10 shape=ellipse]
 		"Peça" -> "Peça_Código"
 		"Peça_Descrição" [label="Descrição" fontsize=10 shape=ellipse]
@@ -70,7 +70,7 @@ digraph "Diagrama ER" {
 		"Peça" -> "Peça_Valor Unitário"
 	}
 	subgraph "cluster_Mecânico" {
-		color=lightblue label="Mecânico" style="filled,rounded"
+		color=lightblue fontsize=14 label=<<b>Mecânico</b>> style="filled,rounded"
 		"Mecânico_Código" [label="Código" fontsize=10 shape=ellipse]
 		"Mecânico" -> "Mecânico_Código"
 		"Mecânico_Nome" [label=Nome fontsize=10 shape=ellipse]
@@ -81,7 +81,7 @@ digraph "Diagrama ER" {
 		"Mecânico" -> "Mecânico_Especialidade"
 	}
 	subgraph "cluster_Tabela Referencia Mão De Obra" {
-		color=lightblue label="Tabela Referencia Mão De Obra" style="filled,rounded"
+		color=lightblue fontsize=14 label=<<b>Tabela Referencia Mão De Obra</b>> style="filled,rounded"
 		"Tabela Referencia Mão De Obra_Código" [label="Código" fontsize=10 shape=ellipse]
 		"Tabela Referencia Mão De Obra" -> "Tabela Referencia Mão De Obra_Código"
 		"Tabela Referencia Mão De Obra_Descrição" [label="Descrição" fontsize=10 shape=ellipse]
