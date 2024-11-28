@@ -1,0 +1,26 @@
+digraph "Esquema Conceitual Oficina Mecânica" {
+	bgcolor="white:lightblue" gradientangle=270 style=filled
+	Cliente [label="Cliente
+(Código, Nome, Telefone, Endereço)" color="#cccccc" fillcolor="#f9f9f9" fontname=Arial fontsize=10 penwidth=1.5 shape=box style="filled,rounded"]
+	"Veículo" [label="Veículo
+(Código, Placa, Modelo, Marca, Ano, Código Cliente)" color="#cccccc" fillcolor="#f9f9f9" fontname=Arial fontsize=10 penwidth=1.5 shape=box style="filled,rounded"]
+	OS [label="Ordem de Serviço (OS)
+(Número, Data de Emissão, Data de Conclusão, Valor Total, Status, Código Veículo, Código Equipe)" color="#cccccc" fillcolor="#f9f9f9" fontname=Arial fontsize=10 penwidth=1.5 shape=box style="filled,rounded"]
+	"Mecânico" [label="Mecânico
+(Código, Nome, Endereço, Especialidade)" color="#cccccc" fillcolor="#f9f9f9" fontname=Arial fontsize=10 penwidth=1.5 shape=box style="filled,rounded"]
+	Equipe [label="Equipe
+(Código, Nome da Equipe)" color="#cccccc" fillcolor="#f9f9f9" fontname=Arial fontsize=10 penwidth=1.5 shape=box style="filled,rounded"]
+	"Serviço" [label="Serviço
+(Código, Descrição, Valor por Referência de Mão de Obra)" color="#cccccc" fillcolor="#f9f9f9" fontname=Arial fontsize=10 penwidth=1.5 shape=box style="filled,rounded"]
+	"Peça" [label="Peça
+(Código, Descrição, Valor Unitário)" color="#cccccc" fillcolor="#f9f9f9" fontname=Arial fontsize=10 penwidth=1.5 shape=box style="filled,rounded"]
+	TabelaMO [label="Tabela de Referência de Mão de Obra
+(Código, Descrição, Valor Hora)" color="#cccccc" fillcolor="#f9f9f9" fontname=Arial fontsize=10 penwidth=1.5 shape=box style="filled,rounded"]
+	Cliente -> "Veículo" [label="1:N" fontsize=9]
+	"Veículo" -> OS [label="1:N" fontsize=9]
+	OS -> Equipe [label="N:1" fontsize=9]
+	Equipe -> "Mecânico" [label="1:N" fontsize=9]
+	OS -> "Serviço" [label="1:N" fontsize=9]
+	OS -> "Peça" [label="1:N" fontsize=9]
+	"Serviço" -> TabelaMO [label="N:1" fontsize=9]
+}
