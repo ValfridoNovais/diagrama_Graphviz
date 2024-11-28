@@ -26,8 +26,8 @@ def load_database(db_name):
 def list_databases():
     return [f.replace(".json", "") for f in os.listdir(DB_DIR) if f.endswith(".json")]
 
-# Função para criar o diagrama
-def create_dynamic_diagram(tables, relationships, db_name):
+# Função para criar o diagrama ER conforme as normas
+def create_er_diagram(tables, relationships, db_name):
     diagram = Digraph('Diagrama ER', format='png')
     diagram.attr(bgcolor="white:lightblue", style="filled", gradientangle="270")
     
@@ -38,43 +38,43 @@ def create_dynamic_diagram(tables, relationships, db_name):
         fontsize="26"
     )
 
-    # Adicionar tabelas ao diagrama
+    # Adicionar tabelas e colunas
     for table, columns in tables.items():
-        # Nome da tabela em negrito e colunas na mesma linha, mas separadas
-        column_text = ", ".join(columns)  # Colunas na mesma linha
-        formatted_text = f"<<b>{table}</b><br/><font point-size='12'>{column_text}</font>>"
-        diagram.node(
-            table,
-            formatted_text,  # Conteúdo do nó com separação de linhas
-            shape="box",
-            style="filled,rounded",
-            fillcolor="#f9f9f9",
-            fontsize="12"
-        )
+        # Adicionar retângulo para a tabela
+        diagram.node(table, table, shape="box", style="filled", fillcolor="#f9f9f9", fontsize="14")
+        
+        # Adicionar elipses para cada coluna e conectá-las ao retângulo da tabela
+        for column in columns:
+            column_node = f"{table}_{column}"  # Identificador único para a coluna
+            diagram.node(column_node, column, shape="ellipse", style="filled", fillcolor="#e3f2fd", fontsize="12")
+            diagram.edge(table, column_node)  # Ligação entre tabela e coluna
 
     # Adicionar relacionamentos
     for relationship in relationships:
-        diagram.edge(relationship["from"], relationship["to"], label=relationship.get("label", ""), fontsize="10")
+        # Criar losango para o relacionamento
+        rel_label = relationship.get("label", "Relacionamento")
+        rel_id = f"{relationship['from']}_to_{relationship['to']}"  # Identificador único para o losango
+        diagram.node(rel_id, rel_label, shape="diamond", style="filled", fillcolor="#fff3e0", fontsize="12")
+        
+        # Conectar os losangos às tabelas relacionadas
+        diagram.edge(relationship["from"], rel_id)
+        diagram.edge(rel_id, relationship["to"])
     
     return diagram
+
 
 # Função para gerar o SQL
 def generate_sql(tables, relationships):
     sql_commands = []
 
-    # Criar tabelas
     for table, columns in tables.items():
-        column_definitions = []
-        for column in columns:
-            column_definitions.append(f"{column} TEXT")  # Tipo de dado padrão: TEXT
-
-        # Verificar relacionamentos
+        column_definitions = [f"{column} TEXT" for column in columns]
         table_relationships = [
             r for r in relationships if r["from"] == table
         ]
         for rel in table_relationships:
             column_definitions.append(
-                f"FOREIGN KEY ({rel['from']}) REFERENCES {rel['to']}({rel['from']})"
+                f"FOREIGN KEY ({rel['from']}_id) REFERENCES {rel['to']}({rel['from']}_id)"
             )
 
         sql = f"CREATE TABLE {table} (\n  " + ",\n  ".join(column_definitions) + "\n);"
@@ -128,35 +128,54 @@ elif action == "Editar Banco de Dados":
     if st.session_state["current_db"]:
         st.write(f"**Banco de Dados Atual**: {st.session_state['current_db']}")
         
-        # Formulário para adicionar uma nova tabela
-        with st.form("add_table_form", clear_on_submit=True):
-            table_name = st.text_input("Nome da Tabela")
-            num_columns = st.number_input("Número de Colunas", min_value=1, step=1)
-            submitted = st.form_submit_button("Adicionar Tabela")
-            
-            if submitted:
-                if table_name and table_name not in st.session_state["tables"]:
-                    st.session_state["tables"][table_name] = [f"Coluna {i+1}" for i in range(int(num_columns))]
-                else:
-                    st.error("O nome da tabela é obrigatório ou já existe.")
-
-        # Mostrar tabelas existentes e permitir edição
-        st.subheader("Tabelas Criadas")
+        # Visualizar e editar tabelas
+        st.subheader("Tabelas Existentes")
         for table, columns in st.session_state["tables"].items():
             st.write(f"**{table}**: {', '.join(columns)}")
             new_columns = st.text_area(f"Editar Colunas de {table}", "\n".join(columns)).split("\n")
-            st.session_state["tables"][table] = new_columns
+            st.session_state["tables"][table] = [col.strip() for col in new_columns if col.strip()]
 
-        # Interface para adicionar relacionamentos
-        st.subheader("Adicionar Relacionamentos")
-        with st.form("add_relationship_form", clear_on_submit=True):
-            from_table = st.selectbox("Tabela de Origem", options=list(st.session_state["tables"].keys()))
-            to_table = st.selectbox("Tabela de Destino", options=list(st.session_state["tables"].keys()))
+        # Adicionar nova tabela
+        with st.form("add_table_form", clear_on_submit=True):
+            st.write("Adicionar Nova Tabela:")
+            table_name = st.text_input("Nome da Tabela")
+            num_columns = st.number_input("Número de Colunas", min_value=1, step=1)
+            submitted = st.form_submit_button("Adicionar Tabela")
+            if submitted:
+                if table_name and table_name not in st.session_state["tables"]:
+                    st.session_state["tables"][table_name] = [f"Coluna {i+1}" for i in range(int(num_columns))]
+                    st.success(f"Tabela '{table_name}' adicionada com sucesso!")
+                else:
+                    st.error("O nome da tabela é obrigatório ou já existe.")
+
+        # Visualizar e editar relacionamentos
+        st.subheader("Relacionamentos Existentes")
+        if len(st.session_state["relationships"]) > 0:
+            for idx, rel in enumerate(st.session_state["relationships"]):
+                st.write(f"{idx+1}. {rel['from']} → {rel['to']} ({rel.get('label', 'Sem descrição')})")
+        else:
+            st.write("Nenhum relacionamento encontrado.")
+
+        # Adicionar ou remover relacionamentos
+        with st.form("edit_relationship_form", clear_on_submit=True):
+            st.write("Adicionar Novo Relacionamento:")
+            from_table = st.selectbox("Tabela de Origem", options=list(st.session_state["tables"].keys()), key="rel_from")
+            to_table = st.selectbox("Tabela de Destino", options=list(st.session_state["tables"].keys()), key="rel_to")
             relationship_label = st.text_input("Descrição do Relacionamento (Opcional)")
-            relationship_submitted = st.form_submit_button("Adicionar Relacionamento")
-            
-            if relationship_submitted:
+            submitted_rel = st.form_submit_button("Adicionar Relacionamento")
+            if submitted_rel:
                 st.session_state["relationships"].append({"from": from_table, "to": to_table, "label": relationship_label})
+                st.success("Relacionamento adicionado com sucesso!")
+
+            if len(st.session_state["relationships"]) > 0:
+                remove_idx = st.number_input(
+                    "Digite o número do relacionamento para removê-lo",
+                    min_value=1, max_value=len(st.session_state["relationships"]), step=1
+                )
+                remove_submitted = st.form_submit_button("Remover Relacionamento")
+                if remove_submitted:
+                    del st.session_state["relationships"][remove_idx - 1]
+                    st.success("Relacionamento removido com sucesso!")
 
         # Salvar alterações no banco de dados
         if st.button("Salvar Alterações"):
@@ -175,13 +194,12 @@ elif action == "Visualizar Diagramas":
         selected_db = st.selectbox("Selecione um Banco de Dados", db_list)
         if st.button("Gerar Diagrama e SQL"):
             tables, relationships = load_database(selected_db)
-            # Gerar o diagrama
-            diagram = create_dynamic_diagram(tables, relationships, selected_db)
+            diagram = create_er_diagram(tables, relationships, selected_db)
             diagram_path = f"./{selected_db}_diagram"
             diagram.render(diagram_path, format="png")
             st.image(f"{diagram_path}.png", caption=f"Diagrama do Banco de Dados: {selected_db}", use_container_width=True)
 
-            # Gerar SQL
+
             sql_script = generate_sql(tables, relationships)
             st.subheader("Comando SQL Gerado")
             st.code(sql_script, language="sql")

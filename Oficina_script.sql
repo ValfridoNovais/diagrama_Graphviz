@@ -3,7 +3,7 @@ CREATE TABLE Clientes (
   Nome TEXT,
   Telefone TEXT,
   Endereço TEXT,
-  FOREIGN KEY (Clientes) REFERENCES Veiculo(Clientes)
+  FOREIGN KEY (Clientes_id) REFERENCES Veiculo(Clientes_id)
 );
 
 CREATE TABLE Veiculo (
@@ -13,7 +13,7 @@ CREATE TABLE Veiculo (
   Marca TEXT,
   Ano TEXT,
   Código Cliente TEXT,
-  FOREIGN KEY (Veiculo) REFERENCES Ordem Serviço (OS)(Veiculo)
+  FOREIGN KEY (Veiculo_id) REFERENCES Ordem Serviço (OS)(Veiculo_id)
 );
 
 CREATE TABLE Ordem Serviço (OS) (
@@ -24,22 +24,22 @@ CREATE TABLE Ordem Serviço (OS) (
   Status TEXT,
   Código Veículo TEXT,
   Código Equipe TEXT,
-  FOREIGN KEY (Ordem Serviço (OS)) REFERENCES Equipe(Ordem Serviço (OS)),
-  FOREIGN KEY (Ordem Serviço (OS)) REFERENCES Serviço(Ordem Serviço (OS)),
-  FOREIGN KEY (Ordem Serviço (OS)) REFERENCES Peça(Ordem Serviço (OS))
+  FOREIGN KEY (Ordem Serviço (OS)_id) REFERENCES Equipe(Ordem Serviço (OS)_id),
+  FOREIGN KEY (Ordem Serviço (OS)_id) REFERENCES Serviço(Ordem Serviço (OS)_id),
+  FOREIGN KEY (Ordem Serviço (OS)_id) REFERENCES Peça(Ordem Serviço (OS)_id)
 );
 
 CREATE TABLE Equipe (
   Código TEXT,
   Nome da Equipe TEXT,
-  FOREIGN KEY (Equipe) REFERENCES Mecânico(Equipe)
+  FOREIGN KEY (Equipe_id) REFERENCES Mecânico(Equipe_id)
 );
 
 CREATE TABLE Serviço (
   Código TEXT,
   Descrição TEXT,
   Valor por Referência de Mão de Obra TEXT,
-  FOREIGN KEY (Serviço) REFERENCES Tabela Referencia Mão De Obra(Serviço)
+  FOREIGN KEY (Serviço_id) REFERENCES Tabela Referencia Mão De Obra(Serviço_id)
 );
 
 CREATE TABLE Peça (
