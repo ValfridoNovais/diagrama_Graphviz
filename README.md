@@ -42,7 +42,7 @@ Antes de executar o programa, certifique-se de ter as seguintes dependências in
 
 ### Instalação das Dependências
 
-```bash
+bash
 pip install streamlit graphviz
 
 ### Instalação do Graphviz
