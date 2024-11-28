@@ -61,13 +61,16 @@ pip install streamlit graphviz
 # Como Usar
 
 ## Clone o repositório:
--  ```bash
+
+- **Clone**:
+  ```bash
  git clone <URL do repositório>
  cd <nome do diretório clonado>
   
 
 ## Execute o programa:
--  ```bash
+- **Execução**:
+ ```bash
  streamlit run app.py
 
 ## Acesse no navegador:
