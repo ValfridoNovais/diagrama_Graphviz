@@ -1,0 +1,50 @@
+digraph "Esquema Conceitual Dinâmico" {
+	bgcolor="white:lightblue" gradientangle=270 style=filled
+	Clientes [label="Clientes
+(Codigo
+Nome
+Telefone
+Endereço)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
+	Veiculo [label="Veiculo
+(Código
+Placa
+Modelo
+Marca
+Ano
+Código Cliente)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
+	"Ordem Serviço (OS)" [label="Ordem Serviço (OS)
+(Número
+Data de Emissão
+Data de Conclusão
+Valor Total
+Status
+Código Veículo
+Código Equipe)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
+	Equipe [label="Equipe
+(Código
+Nome da Equipe)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
+	"Serviço" [label="Serviço
+(Código
+Descrição
+Valor por Referência de Mão de Obra)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
+	"Peça" [label="Peça
+(Código
+Descrição
+Valor Unitário)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
+	"Mecânico" [label="Mecânico
+(Código
+Nome
+Endereço
+Especialidade)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
+	"Tabela Referencia Mão De Obra" [label="Tabela Referencia Mão De Obra
+(Código
+Descrição
+Valor Hora)" fillcolor="#f9f9f9" shape=box style="filled,rounded"]
+	Clientes -> Veiculo [label="Código 1:N Código Cliente" fontsize=10]
+	Veiculo -> "Ordem Serviço (OS)" [label="Código 1:N Código Veiculo " fontsize=10]
+	"Ordem Serviço (OS)" -> Equipe [label="Numero N:1 Código" fontsize=10]
+	"Ordem Serviço (OS)" -> "Serviço" [label="Numero 1:N Código" fontsize=10]
+	"Ordem Serviço (OS)" -> "Peça" [label="Numero 1:N Código" fontsize=10]
+	Equipe -> "Mecânico" [label="Código 1:N Código" fontsize=10]
+	"Serviço" -> "Tabela Referencia Mão De Obra" [label="Código 1:N Código" fontsize=10]
+}
