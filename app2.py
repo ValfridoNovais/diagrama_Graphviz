@@ -46,7 +46,7 @@ def create_chen_diagram(tables, relationships, db_name):
     # Adicionar entidades e seus atributos (elipses)
     for table, columns in tables.items():
         with diagram.subgraph(name=f"cluster_{table}") as sub:
-            sub.attr(label=f"<<b>{table}</b>>", style="filled,rounded", color="lightblue", fontsize="14")
+            sub.attr(label=f"<<b>{table}</b>>", style="filled", color="lightblue", fontsize="14")
             for column in columns:
                 sub.node(f"{table}_{column}", label=column, shape="ellipse", fontsize="10")
                 sub.edge(table, f"{table}_{column}")
