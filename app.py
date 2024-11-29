@@ -2,10 +2,19 @@ import streamlit as st
 from graphviz import Digraph
 import json
 import os
+from datetime import datetime
+from fpdf import FPDF
 
-# Diretório onde os bancos de dados serão salvos
+# Diretórios onde os arquivos serão salvos
 DB_DIR = "./bancos_dados"
+IMG_DIR = r"C:\Repositorios_GitHube\MeusProjetos\diagrama_Graphviz\bancos_dados\Oficina\IMG"
+SQL_DIR = r"C:\Repositorios_GitHube\MeusProjetos\diagrama_Graphviz\bancos_dados\Oficina\SQL"
+PDF_DIR = r"C:\Repositorios_GitHube\MeusProjetos\diagrama_Graphviz\bancos_dados\Oficina\PDF"
+
 os.makedirs(DB_DIR, exist_ok=True)
+os.makedirs(IMG_DIR, exist_ok=True)
+os.makedirs(SQL_DIR, exist_ok=True)
+os.makedirs(PDF_DIR, exist_ok=True)
 
 # Função para salvar o banco de dados
 def save_database(db_name, tables, relationships):
@@ -30,43 +39,28 @@ def list_databases():
 def create_er_diagram(tables, relationships, db_name):
     diagram = Digraph('Diagrama ER', format='png')
     diagram.attr(bgcolor="white:lightblue", style="filled", gradientangle="270")
-    
-    # Adicionar título ao diagrama
     diagram.attr(
         label=f"Diagrama Entidade-Relacionamento\n{db_name}",
         labelloc="t",
         fontsize="26"
     )
-
-    # Adicionar tabelas e colunas
     for table, columns in tables.items():
-        # Adicionar retângulo para a tabela
         diagram.node(table, table, shape="box", style="filled", fillcolor="#f9f9f9", fontsize="14")
-        
-        # Adicionar elipses para cada coluna e conectá-las ao retângulo da tabela
         for column in columns:
-            column_node = f"{table}_{column}"  # Identificador único para a coluna
+            column_node = f"{table}_{column}"
             diagram.node(column_node, column, shape="ellipse", style="filled", fillcolor="#e3f2fd", fontsize="12")
-            diagram.edge(table, column_node)  # Ligação entre tabela e coluna
-
-    # Adicionar relacionamentos
+            diagram.edge(table, column_node)
     for relationship in relationships:
-        # Criar losango para o relacionamento
         rel_label = relationship.get("label", "Relacionamento")
-        rel_id = f"{relationship['from']}_to_{relationship['to']}"  # Identificador único para o losango
+        rel_id = f"{relationship['from']}_to_{relationship['to']}"
         diagram.node(rel_id, rel_label, shape="diamond", style="filled", fillcolor="#fff3e0", fontsize="12")
-        
-        # Conectar os losangos às tabelas relacionadas
         diagram.edge(relationship["from"], rel_id)
         diagram.edge(rel_id, relationship["to"])
-    
     return diagram
-
 
 # Função para gerar o SQL
 def generate_sql(tables, relationships):
     sql_commands = []
-
     for table, columns in tables.items():
         column_definitions = [f"{column} TEXT" for column in columns]
         table_relationships = [
@@ -76,11 +70,28 @@ def generate_sql(tables, relationships):
             column_definitions.append(
                 f"FOREIGN KEY ({rel['from']}_id) REFERENCES {rel['to']}({rel['from']}_id)"
             )
-
         sql = f"CREATE TABLE {table} (\n  " + ",\n  ".join(column_definitions) + "\n);"
         sql_commands.append(sql)
-
     return "\n\n".join(sql_commands)
+
+# Função para criar um PDF com o diagrama e SQL
+def create_pdf(diagram_path, sql_script, db_name):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt=f"Banco de Dados: {db_name}", ln=True, align="C")
+    pdf.ln(10)
+    pdf.cell(200, 10, txt="Diagrama Entidade-Relacionamento", ln=True, align="C")
+    pdf.ln(10)
+    pdf.image(diagram_path, x=10, y=30, w=190)
+    pdf.ln(100)
+    pdf.cell(200, 10, txt="Script SQL Gerado", ln=True, align="C")
+    pdf.ln(10)
+    for line in sql_script.splitlines():
+        pdf.cell(200, 10, txt=line, ln=True, align="L")
+    pdf_path = os.path.join(PDF_DIR, f"ER_SQL_{db_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf")
+    pdf.output(pdf_path)
+    return pdf_path
 
 # Inicializar variáveis de sessão para tabelas e relacionamentos
 if "current_db" not in st.session_state:
@@ -195,15 +206,19 @@ elif action == "Visualizar Diagramas":
         if st.button("Gerar Diagrama e SQL"):
             tables, relationships = load_database(selected_db)
             diagram = create_er_diagram(tables, relationships, selected_db)
-            diagram_path = f"./{selected_db}_diagram"
-            diagram.render(diagram_path, format="png")
-            st.image(f"{diagram_path}.png", caption=f"Diagrama do Banco de Dados: {selected_db}", use_container_width=True)
-
-
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            img_path = os.path.join(IMG_DIR, f"DiagramaER_{selected_db}_{timestamp}.png")
+            diagram.render(img_path.replace(".png", ""), format="png")
+            st.image(img_path, caption=f"Diagrama do Banco de Dados: {selected_db}", use_container_width=True)
+            
             sql_script = generate_sql(tables, relationships)
+            sql_path = os.path.join(SQL_DIR, f"Sql_{selected_db}_{timestamp}.sql")
+            with open(sql_path, "w") as f:
+                f.write(sql_script)
+
             st.subheader("Comando SQL Gerado")
             st.code(sql_script, language="sql")
-            with open(f"{selected_db}_script.sql", "w") as f:
-                f.write(sql_script)
-            with open(f"{selected_db}_script.sql", "rb") as sql_file:
-                st.download_button("Baixar Script SQL", data=sql_file, file_name=f"{selected_db}_script.sql", mime="text/sql")
+            
+            if st.button("Salvar como PDF"):
+                pdf_path = create_pdf(img_path, sql_script, selected_db)
+                st.success(f"PDF salvo em: {pdf_path}")

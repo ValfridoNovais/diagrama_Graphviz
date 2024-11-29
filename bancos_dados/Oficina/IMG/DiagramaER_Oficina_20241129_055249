@@ -1,0 +1,98 @@
+digraph "Diagrama ER" {
+	bgcolor="white:lightblue" gradientangle=270 style=filled
+	fontsize=26 label="Diagrama Entidade-Relacionamento
+Oficina" labelloc=t
+	Clientes [label=Clientes fillcolor="#f9f9f9" fontsize=14 shape=box style=filled]
+	Clientes_Codigo [label=Codigo fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	Clientes -> Clientes_Codigo
+	Clientes_Nome [label=Nome fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	Clientes -> Clientes_Nome
+	Clientes_Telefone [label=Telefone fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	Clientes -> Clientes_Telefone
+	"Clientes_Endereço" [label="Endereço" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	Clientes -> "Clientes_Endereço"
+	Veiculo [label=Veiculo fillcolor="#f9f9f9" fontsize=14 shape=box style=filled]
+	"Veiculo_Código" [label="Código" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	Veiculo -> "Veiculo_Código"
+	Veiculo_Placa [label=Placa fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	Veiculo -> Veiculo_Placa
+	Veiculo_Modelo [label=Modelo fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	Veiculo -> Veiculo_Modelo
+	Veiculo_Marca [label=Marca fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	Veiculo -> Veiculo_Marca
+	Veiculo_Ano [label=Ano fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	Veiculo -> Veiculo_Ano
+	"Veiculo_Código Cliente" [label="Código Cliente" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	Veiculo -> "Veiculo_Código Cliente"
+	"Ordem Serviço (OS)" [label="Ordem Serviço (OS)" fillcolor="#f9f9f9" fontsize=14 shape=box style=filled]
+	"Ordem Serviço (OS)_Número" [label="Número" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Ordem Serviço (OS)" -> "Ordem Serviço (OS)_Número"
+	"Ordem Serviço (OS)_Data de Emissão" [label="Data de Emissão" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Ordem Serviço (OS)" -> "Ordem Serviço (OS)_Data de Emissão"
+	"Ordem Serviço (OS)_Data de Conclusão" [label="Data de Conclusão" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Ordem Serviço (OS)" -> "Ordem Serviço (OS)_Data de Conclusão"
+	"Ordem Serviço (OS)_Valor Total" [label="Valor Total" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Ordem Serviço (OS)" -> "Ordem Serviço (OS)_Valor Total"
+	"Ordem Serviço (OS)_Status" [label=Status fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Ordem Serviço (OS)" -> "Ordem Serviço (OS)_Status"
+	"Ordem Serviço (OS)_Código Veículo" [label="Código Veículo" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Ordem Serviço (OS)" -> "Ordem Serviço (OS)_Código Veículo"
+	"Ordem Serviço (OS)_Código Equipe" [label="Código Equipe" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Ordem Serviço (OS)" -> "Ordem Serviço (OS)_Código Equipe"
+	Equipe [label=Equipe fillcolor="#f9f9f9" fontsize=14 shape=box style=filled]
+	"Equipe_Código" [label="Código" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	Equipe -> "Equipe_Código"
+	"Equipe_Nome da Equipe" [label="Nome da Equipe" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	Equipe -> "Equipe_Nome da Equipe"
+	"Serviço" [label="Serviço" fillcolor="#f9f9f9" fontsize=14 shape=box style=filled]
+	"Serviço_Código" [label="Código" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Serviço" -> "Serviço_Código"
+	"Serviço_Descrição" [label="Descrição" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Serviço" -> "Serviço_Descrição"
+	"Serviço_Valor por Referência de Mão de Obra" [label="Valor por Referência de Mão de Obra" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Serviço" -> "Serviço_Valor por Referência de Mão de Obra"
+	"Peça" [label="Peça" fillcolor="#f9f9f9" fontsize=14 shape=box style=filled]
+	"Peça_Código" [label="Código" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Peça" -> "Peça_Código"
+	"Peça_Descrição" [label="Descrição" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Peça" -> "Peça_Descrição"
+	"Peça_Valor Unitário" [label="Valor Unitário" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Peça" -> "Peça_Valor Unitário"
+	"Mecânico" [label="Mecânico" fillcolor="#f9f9f9" fontsize=14 shape=box style=filled]
+	"Mecânico_Código" [label="Código" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Mecânico" -> "Mecânico_Código"
+	"Mecânico_Nome" [label=Nome fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Mecânico" -> "Mecânico_Nome"
+	"Mecânico_Endereço" [label="Endereço" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Mecânico" -> "Mecânico_Endereço"
+	"Mecânico_Especialidade" [label=Especialidade fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Mecânico" -> "Mecânico_Especialidade"
+	"Tabela Referencia Mão De Obra" [label="Tabela Referencia Mão De Obra" fillcolor="#f9f9f9" fontsize=14 shape=box style=filled]
+	"Tabela Referencia Mão De Obra_Código" [label="Código" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Tabela Referencia Mão De Obra" -> "Tabela Referencia Mão De Obra_Código"
+	"Tabela Referencia Mão De Obra_Descrição" [label="Descrição" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Tabela Referencia Mão De Obra" -> "Tabela Referencia Mão De Obra_Descrição"
+	"Tabela Referencia Mão De Obra_Valor Hora" [label="Valor Hora" fillcolor="#e3f2fd" fontsize=12 shape=ellipse style=filled]
+	"Tabela Referencia Mão De Obra" -> "Tabela Referencia Mão De Obra_Valor Hora"
+	Clientes_to_Veiculo [label="Código 1:N Código Cliente" fillcolor="#fff3e0" fontsize=12 shape=diamond style=filled]
+	Clientes -> Clientes_to_Veiculo
+	Clientes_to_Veiculo -> Veiculo
+	"Veiculo_to_Ordem Serviço (OS)" [label="Código 1:N Código Veiculo " fillcolor="#fff3e0" fontsize=12 shape=diamond style=filled]
+	Veiculo -> "Veiculo_to_Ordem Serviço (OS)"
+	"Veiculo_to_Ordem Serviço (OS)" -> "Ordem Serviço (OS)"
+	"Ordem Serviço (OS)_to_Equipe" [label="Numero N:1 Código" fillcolor="#fff3e0" fontsize=12 shape=diamond style=filled]
+	"Ordem Serviço (OS)" -> "Ordem Serviço (OS)_to_Equipe"
+	"Ordem Serviço (OS)_to_Equipe" -> Equipe
+	"Ordem Serviço (OS)_to_Serviço" [label="Numero 1:N Código" fillcolor="#fff3e0" fontsize=12 shape=diamond style=filled]
+	"Ordem Serviço (OS)" -> "Ordem Serviço (OS)_to_Serviço"
+	"Ordem Serviço (OS)_to_Serviço" -> "Serviço"
+	"Equipe_to_Mecânico" [label="Código 1:N Código" fillcolor="#fff3e0" fontsize=12 shape=diamond style=filled]
+	Equipe -> "Equipe_to_Mecânico"
+	"Equipe_to_Mecânico" -> "Mecânico"
+	"Serviço_to_Tabela Referencia Mão De Obra" [label="Código 1:N Código" fillcolor="#fff3e0" fontsize=12 shape=diamond style=filled]
+	"Serviço" -> "Serviço_to_Tabela Referencia Mão De Obra"
+	"Serviço_to_Tabela Referencia Mão De Obra" -> "Tabela Referencia Mão De Obra"
+	"Ordem Serviço (OS)_to_Peça" [label="Numero M:N Código" fillcolor="#fff3e0" fontsize=12 shape=diamond style=filled]
+	"Ordem Serviço (OS)" -> "Ordem Serviço (OS)_to_Peça"
+	"Ordem Serviço (OS)_to_Peça" -> "Peça"
+}

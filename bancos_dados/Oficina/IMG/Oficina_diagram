@@ -1,0 +1,5 @@
+digraph "Diagrama ER" {
+	bgcolor="white:lightblue" gradientangle=270 style=filled
+	fontsize=26 label="Diagrama Entidade-Relacionamento
+Oficina" labelloc=t
+}
