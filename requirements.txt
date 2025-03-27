@@ -3,4 +3,5 @@ graphviz==0.20.3
 fpdf==1.7.2
 pygraphviz
 streamlit-agraph==0.0.33
+numpy==1.26.0
 
