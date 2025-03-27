@@ -1,10 +1,9 @@
 import streamlit as st
 import graphviz as gv
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 import io
 import numpy as np
-import base64
 
 # Configuração inicial
 st.set_page_config(layout="wide")
@@ -23,6 +22,17 @@ if 'fluxos' not in st.session_state:
 # Cores para degradê
 COR_INICIAL = (50, 205, 50)  # Verde claro
 COR_FINAL = (0, 100, 0)       # Verde escuro
+
+def add_element(fluxo, element_type, element_text):
+    """Adiciona um novo elemento ao fluxograma"""
+    element_number = st.session_state.contador_elementos
+    st.session_state.fluxos[fluxo]['elements'].append({
+        'type': element_type,
+        'text': f"{element_number}. {element_text}",
+        'id': len(st.session_state.fluxos[fluxo]['elements']),
+        'number': element_number
+    })
+    st.session_state.contador_elementos += 1
 
 def criar_degrade(largura, altura):
     """Cria uma imagem com degradê radial do verde claro ao escuro"""
