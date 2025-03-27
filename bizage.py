@@ -12,26 +12,40 @@ st.title("📊 MMPGProduções - Construtor de Fluxogramas Profissionais")
 # Estado da sessão
 if 'fluxos' not in st.session_state:
     st.session_state.fluxos = {
-        'Principal': {'elements': [], 'connections': [], 'color': '#4CAF50'},
-        'Secundário': {'elements': [], 'connections': [], 'color': '#2196F3'}
+        'Principal': {
+            'elements': [], 
+            'connections': [], 
+            'color': '#4CAF50',
+            'sections': {
+                'Seção 1': {'elements': [], 'color': '#E3F2FD'},
+                'Seção 2': {'elements': [], 'color': '#E8F5E9'},
+                'Seção 3': {'elements': [], 'color': '#FFF3E0'},
+                'Seção 4': {'elements': [], 'color': '#F3E5F5'},
+                'Seção 5': {'elements': [], 'color': '#E0F7FA'}
+            }
+        }
     }
     st.session_state.fluxo_atual = 'Principal'
     st.session_state.titulo = "Fluxograma MMPGProduções"
     st.session_state.contador_elementos = 1
+    st.session_state.connection_style = 'solid'
 
 # Cores para degradê
 COR_INICIAL = (50, 205, 50)  # Verde claro
 COR_FINAL = (0, 100, 0)       # Verde escuro
 
-def add_element(fluxo, element_type, element_text):
-    """Adiciona um novo elemento ao fluxograma"""
+def add_element(fluxo, element_type, element_text, section, element_color):
+    """Adiciona um novo elemento ao fluxograma na seção especificada"""
     element_number = st.session_state.contador_elementos
-    st.session_state.fluxos[fluxo]['elements'].append({
+    new_element = {
         'type': element_type,
         'text': f"{element_number}. {element_text}",
-        'id': len(st.session_state.fluxos[fluxo]['elements']),
-        'number': element_number
-    })
+        'id': len([e for sec in st.session_state.fluxos[fluxo]['sections'].values() for e in sec['elements']]),
+        'number': element_number,
+        'section': section,
+        'color': element_color
+    }
+    st.session_state.fluxos[fluxo]['sections'][section]['elements'].append(new_element)
     st.session_state.contador_elementos += 1
 
 def criar_degrade(largura, altura):
@@ -44,11 +58,9 @@ def criar_degrade(largura, altura):
     
     for y in range(altura):
         for x in range(largura):
-            # Calcula a distância do centro
             distancia = np.sqrt((x - centro_x)**2 + (y - centro_y)**2)
             ratio = min(distancia / raio_max, 1.0)
             
-            # Interpola as cores
             r = int(COR_INICIAL[0] + (COR_FINAL[0] - COR_INICIAL[0]) * ratio)
             g = int(COR_INICIAL[1] + (COR_FINAL[1] - COR_INICIAL[1]) * ratio)
             b = int(COR_INICIAL[2] + (COR_FINAL[2] - COR_INICIAL[2]) * ratio)
@@ -62,28 +74,22 @@ def adicionar_logo(img):
     draw = ImageDraw.Draw(img)
     width, height = img.size
     
-    # Configurações do texto
     texto = "MMPGProduções"
     try:
         fonte = ImageFont.truetype("arial.ttf", 36)
     except:
         fonte = ImageFont.load_default()
     
-    # Posição no canto inferior esquerdo
     bbox = draw.textbbox((0, 0), texto, font=fonte)
     text_width = bbox[2] - bbox[0]
     text_height = bbox[3] - bbox[1]
     pos = (20, height - text_height - 20)
     
-    # Cria máscara para o texto
     mask = Image.new('L', (text_width + 10, text_height + 10))
     mask_draw = ImageDraw.Draw(mask)
     mask_draw.text((5, 5), texto, font=fonte, fill=255)
     
-    # Cria degradê para o texto
     degrade_texto = criar_degrade(text_width + 10, text_height + 10)
-    
-    # Aplica o texto com degradê
     img.paste(degrade_texto, pos, mask)
     
     return img
@@ -103,43 +109,47 @@ def adicionar_data_hora(img):
     return img
 
 def renderizar_fluxograma(fluxo):
-    """Renderiza o fluxograma usando Graphviz"""
+    """Renderiza o fluxograma usando Graphviz com seções e estilos personalizados"""
     graph = gv.Digraph()
-    graph.attr('graph', label=st.session_state.titulo, labelloc='t', fontsize='20')
+    graph.attr('graph', label=st.session_state.titulo, labelloc='t', fontsize='20', rankdir='TB')
     
-    # Adiciona elementos
-    for element in st.session_state.fluxos[fluxo]['elements']:
-        if element['type'] == 'Processo':
-            graph.node(str(element['id']), label=element['text'], shape='box', 
-                      style='filled', fillcolor='lightgray')
-        elif element['type'] == 'Decisão':
-            graph.node(str(element['id']), label=element['text'], shape='diamond', 
-                      style='filled', fillcolor='lightblue')
-        elif element['type'] == 'Início/Fim':
-            graph.node(str(element['id']), label=element['text'], shape='ellipse', 
-                      style='filled', fillcolor='lightgreen')
+    # Adiciona clusters para cada seção
+    for section_name, section_data in st.session_state.fluxos[fluxo]['sections'].items():
+        with graph.subgraph(name=f'cluster_{section_name}') as c:
+            c.attr(label=section_name, style='filled', color='lightgray', 
+                  fillcolor=section_data['color'], fontsize='16', rank='same')
+            
+            # Adiciona elementos da seção
+            for element in section_data['elements']:
+                if element['type'] == 'Processo':
+                    c.node(str(element['id']), label=element['text'], shape='box', 
+                          style='filled', fillcolor=element['color'])
+                elif element['type'] == 'Decisão':
+                    c.node(str(element['id']), label=element['text'], shape='diamond', 
+                          style='filled', fillcolor=element['color'])
+                elif element['type'] == 'Início/Fim':
+                    c.node(str(element['id']), label=element['text'], shape='ellipse', 
+                          style='filled', fillcolor=element['color'])
     
-    # Adiciona conexões
+    # Adiciona conexões com estilo configurável
     for conn in st.session_state.fluxos[fluxo]['connections']:
-        graph.edge(str(conn['from']), str(conn['to']), label=conn.get('label', ''))
+        graph.edge(str(conn['from']), str(conn['to']), 
+                  label=conn.get('label', ''),
+                  style=st.session_state.connection_style,
+                  penwidth='2')
     
     return graph
 
 def exportar_fluxograma(graph, formato):
     """Exporta o fluxograma com logo e data/hora"""
     try:
-        # Renderiza o gráfico no formato especificado
         graph.format = formato.lower()
         img_bytes = graph.pipe()
         
-        # Converte para imagem PIL
         img = Image.open(io.BytesIO(img_bytes))
-        
-        # Adiciona marca d'água e informações
         img = adicionar_logo(img)
         img = adicionar_data_hora(img)
         
-        # Converte de volta para bytes
         img_byte_arr = io.BytesIO()
         img.save(img_byte_arr, format='PNG' if formato == 'png' else 'PDF')
         
@@ -170,37 +180,69 @@ with col1:
             "Descrição do elemento:",
             key="texto_elemento"
         )
+        secao_elemento = st.selectbox(
+            "Seção:",
+            list(st.session_state.fluxos[st.session_state.fluxo_atual]['sections'].keys()),
+            key="secao_elemento"
+        )
+        cor_elemento = st.color_picker(
+            "Cor do elemento:",
+            value="#FFFFFF",
+            key="cor_elemento"
+        )
         if st.button("Adicionar Elemento"):
             if texto_elemento:
-                add_element(st.session_state.fluxo_atual, tipo_elemento, texto_elemento)
+                add_element(st.session_state.fluxo_atual, tipo_elemento, texto_elemento, secao_elemento, cor_elemento)
     
     # Seção de conexões
     with st.expander("🔗 Criar Conexões"):
-        if st.session_state.fluxos[st.session_state.fluxo_atual]['elements']:
+        all_elements = [e for sec in st.session_state.fluxos[st.session_state.fluxo_atual]['sections'].values() for e in sec['elements']]
+        
+        if all_elements:
             elemento_from = st.selectbox(
                 "De:",
-                [e['text'] for e in st.session_state.fluxos[st.session_state.fluxo_atual]['elements']],
+                [e['text'] for e in all_elements],
                 key="elemento_from"
             )
             elemento_to = st.selectbox(
                 "Para:",
-                [e['text'] for e in st.session_state.fluxos[st.session_state.fluxo_atual]['elements']],
+                [e['text'] for e in all_elements],
                 key="elemento_to"
             )
             label_conexao = st.text_input(
                 "Rótulo da conexão (opcional):",
                 key="label_conexao"
             )
+            st.session_state.connection_style = st.radio(
+                "Estilo da linha:",
+                ['solid', 'dashed'],
+                key="connection_style"
+            )
             if st.button("Conectar Elementos"):
-                id_from = next(e['id'] for e in st.session_state.fluxos[st.session_state.fluxo_atual]['elements'] 
-                             if e['text'] == elemento_from)
-                id_to = next(e['id'] for e in st.session_state.fluxos[st.session_state.fluxo_atual]['elements'] 
-                           if e['text'] == elemento_to)
+                id_from = next(e['id'] for e in all_elements if e['text'] == elemento_from)
+                id_to = next(e['id'] for e in all_elements if e['text'] == elemento_to)
                 st.session_state.fluxos[st.session_state.fluxo_atual]['connections'].append({
                     'from': id_from,
                     'to': id_to,
                     'label': label_conexao
                 })
+    
+    # Seção de gerenciamento de seções
+    with st.expander("📌 Gerenciar Seções"):
+        for i, (section_name, section_data) in enumerate(st.session_state.fluxos[st.session_state.fluxo_atual]['sections'].items()):
+            new_name = st.text_input(
+                f"Nome da Seção {i+1}:",
+                value=section_name,
+                key=f"section_name_{i}"
+            )
+            if new_name != section_name:
+                st.session_state.fluxos[st.session_state.fluxo_atual]['sections'][new_name] = st.session_state.fluxos[st.session_state.fluxo_atual]['sections'].pop(section_name)
+            
+            st.session_state.fluxos[st.session_state.fluxo_atual]['sections'][new_name]['color'] = st.color_picker(
+                f"Cor da Seção {i+1}:",
+                value=section_data['color'],
+                key=f"section_color_{i}"
+            )
     
     # Seção de exportação
     with st.expander("💾 Exportar Fluxograma"):
@@ -223,16 +265,15 @@ with col1:
                 )
 
 with col2:
-    # Exibir título centralizado
-    st.markdown(f"<h1 style='text-align: center;'>{st.session_state.titulo}</h1>", 
-                unsafe_allow_html=True)
+    st.markdown(f"<h1 style='text-align: center;'>{st.session_state.titulo}</h1>", unsafe_allow_html=True)
     
-    # Visualização do fluxograma
     graph = renderizar_fluxograma(st.session_state.fluxo_atual)
     st.graphviz_chart(graph, use_container_width=True)
     
-    # Lista de elementos numerados
-    if st.session_state.fluxos[st.session_state.fluxo_atual]['elements']:
-        st.subheader("Elementos do Fluxograma:")
-        for element in st.session_state.fluxos[st.session_state.fluxo_atual]['elements']:
-            st.write(f"**{element['text']}**")
+    # Lista de elementos por seção
+    for section_name, section_data in st.session_state.fluxos[st.session_state.fluxo_atual]['sections'].items():
+        if section_data['elements']:
+            st.subheader(f"Seção: {section_name}")
+            for element in section_data['elements']:
+                st.markdown(f"<div style='background-color: {element['color']}; padding: 10px; border-radius: 5px; margin: 5px 0;'><b>{element['text']}</b></div>", 
+                           unsafe_allow_html=True)
