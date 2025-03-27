@@ -28,7 +28,6 @@ if 'fluxos' not in st.session_state:
     st.session_state.fluxo_atual = 'Principal'
     st.session_state.titulo = "Fluxograma MMPGProduções"
     st.session_state.contador_elementos = 1
-    st.session_state.connection_style = 'solid'
 
 # Cores para degradê
 COR_INICIAL = (50, 205, 50)  # Verde claro
@@ -108,7 +107,7 @@ def adicionar_data_hora(img):
     draw.text((width - 200, height - 30), data_hora, fill="black", font=fonte)
     return img
 
-def renderizar_fluxograma(fluxo):
+def renderizar_fluxograma(fluxo, connection_style):
     """Renderiza o fluxograma usando Graphviz com seções e estilos personalizados"""
     graph = gv.Digraph()
     graph.attr('graph', label=st.session_state.titulo, labelloc='t', fontsize='20', rankdir='TB')
@@ -135,7 +134,7 @@ def renderizar_fluxograma(fluxo):
     for conn in st.session_state.fluxos[fluxo]['connections']:
         graph.edge(str(conn['from']), str(conn['to']), 
                   label=conn.get('label', ''),
-                  style=st.session_state.connection_style,
+                  style=connection_style,
                   penwidth='2')
     
     return graph
@@ -213,7 +212,7 @@ with col1:
                 "Rótulo da conexão (opcional):",
                 key="label_conexao"
             )
-            st.session_state.connection_style = st.radio(
+            connection_style = st.radio(
                 "Estilo da linha:",
                 ['solid', 'dashed'],
                 key="connection_style"
@@ -252,7 +251,8 @@ with col1:
             key="export_format"
         )
         if st.button("Exportar Fluxograma"):
-            graph = renderizar_fluxograma(st.session_state.fluxo_atual)
+            connection_style = 'solid' if st.session_state.get('connection_style') == 'solid' else 'dashed'
+            graph = renderizar_fluxograma(st.session_state.fluxo_atual, connection_style)
             export_data = exportar_fluxograma(graph, export_format)
             
             if export_data:
@@ -267,7 +267,8 @@ with col1:
 with col2:
     st.markdown(f"<h1 style='text-align: center;'>{st.session_state.titulo}</h1>", unsafe_allow_html=True)
     
-    graph = renderizar_fluxograma(st.session_state.fluxo_atual)
+    connection_style = 'solid' if st.session_state.get('connection_style', 'solid') == 'solid' else 'dashed'
+    graph = renderizar_fluxograma(st.session_state.fluxo_atual, connection_style)
     st.graphviz_chart(graph, use_container_width=True)
     
     # Lista de elementos por seção
