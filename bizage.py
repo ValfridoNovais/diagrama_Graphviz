@@ -1,7 +1,5 @@
 import streamlit as st
 import graphviz as gv
-from PIL import Image
-import io
 
 # Configuração inicial
 st.set_page_config(layout="wide")
@@ -125,6 +123,7 @@ with col1:
                 delete_element(
                     st.session_state.fluxo_atual,
                     int(element_to_delete.split(":")[0])
+                )
                 st.success("Elemento removido!")
                 st.experimental_rerun()
         else:
