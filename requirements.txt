@@ -4,4 +4,4 @@ fpdf==1.7.2
 pygraphviz
 streamlit-agraph==0.0.33
 numpy==1.26.0
-
+youtube-dl==2021.12.17
