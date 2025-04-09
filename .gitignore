@@ -127,6 +127,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+videos/
+*.webm
 
 # Spyder project settings
 .spyderproject
