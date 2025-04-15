@@ -1,6 +1,8 @@
 import yt_dlp
 import os
 from datetime import datetime
+import tkinter as tk
+from tkinter import filedialog
 
 def baixar_video(url, caminho_salvar=None):
     try:
@@ -31,9 +33,16 @@ def baixar_video(url, caminho_salvar=None):
     except Exception as e:
         print(f"\nErro: {str(e)}")
 
+def selecionar_pasta():
+    root = tk.Tk()
+    root.withdraw()  # Esconde a janela principal do tkinter
+    caminho = filedialog.askdirectory(title="Selecione a pasta para salvar o vídeo")
+    return caminho if caminho else None  # Retorna None se o usuário cancelar
+
 if __name__ == "__main__":
     url = input("Cole a URL do vídeo do YouTube: ")
-    caminho = input("Digite o caminho para salvar (deixe em branco para pasta 'videos' no diretório atual): ").strip()
+    print("\nSelecione a pasta para salvar o vídeo...")
+    caminho = selecionar_pasta()
     
-    # Se o usuário não especificar um caminho, usa None para acionar o padrão
-    baixar_video(url, caminho if caminho else None)
+    # Se o usuário não selecionar uma pasta, usa None para acionar o padrão
+    baixar_video(url, caminho)
