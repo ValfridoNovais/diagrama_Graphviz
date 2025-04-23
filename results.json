@@ -5,5 +5,12 @@
         "errors": 0,
         "total": 20,
         "percentage": 100.0
+    },
+    {
+        "date": "2025-04-23 10:45:03",
+        "correct": 7,
+        "errors": 13,
+        "total": 20,
+        "percentage": 35.0
     }
 ]
