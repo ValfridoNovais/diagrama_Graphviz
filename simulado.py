@@ -21,7 +21,7 @@ QUESTIONS = [
     # Parte 2: Ortografia – Uso de S, C, Ç, SS (20 questões mais desafiadoras)
     {"question": "Qual palavra está escrita corretamente e faz sentido na frase: 'Eu gosto de ___ no parque.'?", "options": ["dançar", "danssar", "dançar", "danççar"], "correct": 0},
     {"question": "Na frase 'A ___ está cheia de flores.', qual é a palavra correta?", "options": ["praça", "prassa", "praçsa", "prasa"], "correct": 0},
-    {"question": "Qual palavra está escrita corretamente na frase: 'O ___ brilha no céu.'?", "options": ["nassi", "naçi", "nasci", "naçci"], "correct": 2},
+    {"question": "Qual palavra está escrita corretamente na frase: 'O ___ do sol", "options": ["nassi", "naçi", "nascer", "naçci"], "correct": 2},
     {"question": "Escolha a palavra correta para completar: 'Eu vi uma ___ na floresta.'?", "options": ["onssa", "onça", "onçsa", "onsa"], "correct": 1},
     {"question": "Qual é a escrita correta na frase: 'Eu gosto de tomar um suco com ___.'?", "options": ["assúcar", "açúcar", "açúçar", "assucar"], "correct": 1},
     {"question": "Na frase 'Eu escrevo com um ___ azul.', qual é a palavra correta?", "options": ["lápis", "lápiz", "lapis", "lapiz"], "correct": 0},
