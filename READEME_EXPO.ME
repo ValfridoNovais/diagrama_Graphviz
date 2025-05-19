@@ -1,0 +1,124 @@
+# Diagrama de Estrutura de Pastas
+
+Este script Python gera um diagrama da estrutura de pastas e arquivos de um diretório, utilizando o Graphviz. Ele permite personalização de profundidade, exclusão de diretórios indesejados, dimensionamento de página, tamanho de fonte, formato de saída e engine de layout.
+
+---
+
+## 📦 Requisitos
+
+* Python 3.7 ou superior
+* [Graphviz](https://graphviz.org/download/) instalado e com o executável `dot` disponível no PATH
+* Bibliotecas Python:
+
+  ```bash
+  pip install graphviz
+  ```
+
+---
+
+## 📝 Arquivos
+
+* `export_tree.py`: script principal para geração do diagrama.
+* `estrutura_python.*`: saída do Graphviz (PNG, SVG ou PDF).
+
+---
+
+## 🚀 Instalação
+
+1. Clone este repositório:
+
+   ```bash
+   git clone https://github.com/seuusuario/diagrama-estrutra.git
+   cd diagrama-estrutura
+   ```
+
+2. Crie e ative um ambiente virtual:
+
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate   # Linux/macOS
+   .venv\Scripts\activate      # Windows
+   ```
+
+3. Instale as dependências:
+
+   ```bash
+   pip install graphviz
+   ```
+
+4. Certifique-se de que o comando `dot -V` retorna a versão do Graphviz.
+
+---
+
+## 🎯 Uso
+
+```bash
+python export_tree.py <root_path> [max_depth] [progress_interval] [exclude_dirs] [page_size] [font_size] [output_format] [layout_engine]
+```
+
+| Parâmetro           | Descrição                                                          | Padrão                | Valores válidos                        |
+| ------------------- | ------------------------------------------------------------------ | --------------------- | -------------------------------------- |
+| `root_path`         | Caminho da pasta raiz para gerar o diagrama                        | Diretório atual (`.`) | Qualquer caminho válido                |
+| `max_depth`         | Profundidade máxima de subpastas (número de níveis)                | `2`                   | Inteiro ≥ 0                            |
+| `progress_interval` | Intervalo em nós processados para exibir progresso                 | `100`                 | Inteiro ≥ 1                            |
+| `exclude_dirs`      | Pastas a serem ignoradas, separadas por vírgula                    | `''`                  | Ex.: `node_modules,.expo,.git`         |
+| `page_size`         | Tamanho da página para layout (define `size` e `page` no Graphviz) | `None`                | `A1`, `A2`                             |
+| `font_size`         | Tamanho da fonte (em pontos) para os rótulos dos nós               | `10`                  | String numérica (`"8"`, `"12"`, ...)   |
+| `output_format`     | Formato de saída do arquivo gerado pelo Graphviz                   | `svg`                 | `png`, `svg`, `pdf`                    |
+| `layout_engine`     | Engine de layout do Graphviz                                       | `circo`               | `dot`, `circo`, `twopi`, `fdp`, `sfdp` |
+
+### Exemplos
+
+1. Diagrama em PNG, 3 níveis, excluindo `node_modules` e `.expo`, página A2, fonte 8, layout circular:
+
+   ```bash
+   python export_tree.py \
+     "C:/meu/projeto" 3 100 node_modules,.expo A2 8 png circo
+   ```
+
+2. Diagrama em SVG, somente raiz (0 níveis):
+
+   ```bash
+   python export_tree.py . 0
+   ```
+
+3. Diagrama em PDF, até 4 níveis, sem exclusões, layout hierárquico:
+
+   ```bash
+   python export_tree.py \
+     /caminho/para/raiz 4 200 '' None 10 pdf dot
+   ```
+
+---
+
+## ⚙️ Como funciona
+
+1. **Leitura da árvore de diretórios**: usa `os.walk()` iniciando em `root_path`.
+2. **Filtragem**:
+
+   * Para além de `max_depth`, ignora subpastas.
+   * Remove diretórios listados em `exclude_dirs`.
+3. **Configuração do grafo**:
+
+   * Cria um objeto `Digraph` com `format` e `engine` conforme parâmetros.
+   * Ajusta atributos de espaçamento, cor, fonte, página.
+4. **Criação de nós e arestas**:
+
+   * Cada pasta vira um nó “folder”.
+   * Cada arquivo vira um nó “note”, ligado à pasta correspondente.
+5. **Progresso**: exibe no terminal a cada `progress_interval` nós.
+6. **Renderização**: chama `dot.render()`, gerando o arquivo final e removendo intermediário.
+
+---
+
+## 🛠️ Personalizações
+
+* **Layouts**: experimente `fdp` ou `sfdp` para grafos muito grandes.
+* **Clusters**: modifique para agrupar pastas em `subgraph` se desejar caixas.
+* **Estilos**: edite `graph_attr` e `node_attr` para cores, formas e espaçamentos.
+
+---
+
+## 📝 Licença
+
+MIT © Seu Nome
